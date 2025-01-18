@@ -12,6 +12,8 @@ public class LineDrawer : MonoBehaviour
     LineRenderer drawLine;
     public float lineWidth;
     public MouseRaycast m_mouseRaycast;
+    public GameManager manager;
+    public BallMove ballMove;
     
     // Start is called before the first frame update
     void Start()
@@ -23,39 +25,47 @@ public class LineDrawer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (manager.GetGameStart())
         {
-            newLine = new GameObject("Line");
-            drawLine = newLine.AddComponent<LineRenderer>();
-            drawLine.material = new Material(Shader.Find("Sprites/Default"));
-            
-            drawLine.startColor = Color.red;
-            drawLine.endColor = Color.red;
-            drawLine.startWidth = lineWidth;
-            drawLine.endWidth = lineWidth;
-        }
-        
-        if (Input.GetMouseButton(0))
-        {
-            Debug.DrawLine(Camera.main.ScreenToWorldPoint(Input.mousePosition), m_mouseRaycast.GetHitPosition(), Color.red);
-            timer -= Time.deltaTime;
-            if (timer <= 0)
+            if (Input.GetMouseButtonDown(0))
             {
-                linePoints.Add(m_mouseRaycast.GetHitPosition());
-                drawLine.positionCount = linePoints.Count;
-                drawLine.SetPositions(linePoints.ToArray());
-                
-                timer = timerdelay;
-            }
-        }
+                newLine = new GameObject("Line");
+                drawLine = newLine.AddComponent<LineRenderer>();
+                drawLine.material = new Material(Shader.Find("Sprites/Default"));
 
-        if (Input.GetMouseButtonUp(0))
-        {
-            if (linePoints.Count > 1)
-            {
-                AddMeshColliderToLine();
+                drawLine.startColor = Color.red;
+                drawLine.endColor = Color.red;
+                drawLine.startWidth = lineWidth;
+                drawLine.endWidth = lineWidth;
             }
-            linePoints.Clear();
+
+            if (Input.GetMouseButton(0))
+            {
+                Debug.DrawLine(Camera.main.ScreenToWorldPoint(Input.mousePosition), m_mouseRaycast.GetHitPosition(), Color.red);
+                timer -= Time.deltaTime;
+                if (timer <= 0)
+                {
+                    linePoints.Add(m_mouseRaycast.GetHitPosition());
+                    drawLine.positionCount = linePoints.Count;
+                    drawLine.SetPositions(linePoints.ToArray());
+
+                    timer = timerdelay;
+                }
+            }
+
+            if (Input.GetMouseButtonUp(0))
+            {
+                if (linePoints.Count > 1)
+                {
+                    AddMeshColliderToLine();
+                }
+                linePoints.Clear();
+                if (!manager.GetBallStart())
+                {
+                    manager.SetBallStart(true);
+                    ballMove.StartMove();
+                }
+            }
         }
     }
     
