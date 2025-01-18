@@ -27,58 +27,59 @@ public class LineDrawer : MonoBehaviour
     {
         if (manager.GetGameStart())
         {
-            canDraw = true; // Réinitialiser l'état de dessin
-            newLine = new GameObject("Line");
-            drawLine = newLine.AddComponent<LineRenderer>();
-            drawLine.material = new Material(Shader.Find("Sprites/Default"));
-
-            drawLine.startColor = Color.black;
-            drawLine.endColor = Color.black;
-            drawLine.startWidth = lineWidth;
-            drawLine.endWidth = lineWidth;
-        }
-
-        if (Input.GetMouseButton(0) && canDraw)
-        {
-            Debug.DrawLine(Camera.main.ScreenToWorldPoint(Input.mousePosition), m_mouseRaycast.GetHitPosition(), Color.red);
-            timer -= Time.deltaTime;
-            if (timer <= 0)
+            if (Input.GetMouseButtonDown(0))
             {
-                Vector3 newPoint = m_mouseRaycast.GetHitPosition();
+                canDraw = true; // Réinitialiser l'état de dessin
+                newLine = new GameObject("Line");
+                drawLine = newLine.AddComponent<LineRenderer>();
+                drawLine.material = new Material(Shader.Find("Sprites/Default"));
 
-                // Vérifier si l'ajout du nouveau point ne dépasse pas la longueur maximale
-                if (linePoints.Count > 0)
-                {
-                    float newSegmentLength = Vector3.Distance(linePoints[linePoints.Count - 1], newPoint);
-                    if (GetTotalLineLength() + newSegmentLength > maxLineLength)
-                    {
-                        canDraw = false; // Arrêter le dessin
-                        return;
-                    }
-                }
-
-                // Ajouter le nouveau point
-                linePoints.Add(newPoint);
-                drawLine.positionCount = linePoints.Count;
-                drawLine.SetPositions(linePoints.ToArray());
-
-                timer = timerdelay;
+                drawLine.startColor = Color.black;
+                drawLine.endColor = Color.black;
+                drawLine.startWidth = lineWidth;
+                drawLine.endWidth = lineWidth;
             }
 
-            if (Input.GetMouseButton(0))
+            if (Input.GetMouseButton(0) && canDraw)
             {
-                Debug.DrawLine(Camera.main.ScreenToWorldPoint(Input.mousePosition), m_mouseRaycast.GetHitPosition(), Color.red);
                 timer -= Time.deltaTime;
                 if (timer <= 0)
                 {
-                    linePoints.Add(m_mouseRaycast.GetHitPosition());
+                    Vector3 newPoint = m_mouseRaycast.GetHitPosition();
+
+                    // Vérifier si l'ajout du nouveau point ne dépasse pas la longueur maximale
+                    if (linePoints.Count > 0)
+                    {
+                        float newSegmentLength = Vector3.Distance(linePoints[linePoints.Count - 1], newPoint);
+                        if (GetTotalLineLength() + newSegmentLength > maxLineLength)
+                        {
+                            canDraw = false; // Arrêter le dessin
+                            return;
+                        }
+                    }
+
+                    // Ajouter le nouveau point
+                    linePoints.Add(newPoint);
                     drawLine.positionCount = linePoints.Count;
                     drawLine.SetPositions(linePoints.ToArray());
 
                     timer = timerdelay;
                 }
-            }
 
+                if (Input.GetMouseButton(0))
+                {
+                    Debug.DrawLine(Camera.main.ScreenToWorldPoint(Input.mousePosition), m_mouseRaycast.GetHitPosition(), Color.red);
+                    timer -= Time.deltaTime;
+                    if (timer <= 0)
+                    {
+                        linePoints.Add(m_mouseRaycast.GetHitPosition());
+                        drawLine.positionCount = linePoints.Count;
+                        drawLine.SetPositions(linePoints.ToArray());
+
+                        timer = timerdelay;
+                    }
+                }
+            }
             if (Input.GetMouseButtonUp(0))
             {
                 if (linePoints.Count > 1)
