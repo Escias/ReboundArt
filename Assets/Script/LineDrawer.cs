@@ -11,6 +11,7 @@ public class LineDrawer : MonoBehaviour
     GameObject newLine;
     LineRenderer drawLine;
     public float lineWidth;
+    public MouseRaycast m_mouseRaycast;
     
     // Start is called before the first frame update
     void Start()
@@ -36,11 +37,11 @@ public class LineDrawer : MonoBehaviour
         
         if (Input.GetMouseButton(0))
         {
-            Debug.DrawLine(Camera.main.ScreenToWorldPoint(Input.mousePosition), GetMousePosition(), Color.red);
+            Debug.DrawLine(Camera.main.ScreenToWorldPoint(Input.mousePosition), m_mouseRaycast.GetHitPosition(), Color.red);
             timer -= Time.deltaTime;
             if (timer <= 0)
             {
-                linePoints.Add(GetMousePosition());
+                linePoints.Add(m_mouseRaycast.GetHitPosition());
                 drawLine.positionCount = linePoints.Count;
                 drawLine.SetPositions(linePoints.ToArray());
                 
@@ -58,11 +59,11 @@ public class LineDrawer : MonoBehaviour
         }
     }
 
-    Vector3 GetMousePosition()
+    /*Vector3 GetMousePosition()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         return ray.origin + ray.direction * 10;
-    }
+    }*/
     
     void AddMeshColliderToLine()
     {
