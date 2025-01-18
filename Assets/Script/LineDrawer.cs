@@ -12,9 +12,9 @@ public class LineDrawer : MonoBehaviour
     public float lineWidth;
     public MouseRaycast m_mouseRaycast;
     public float maxLineLength = 10f; // Longueur maximale de la ligne
-
     private bool canDraw = true; // Permet de contrôler si le dessin est autorisé
-
+    public GameManager manager;
+    public BallMove ballMove;
     // Start is called before the first frame update
     void Start()
     {
@@ -25,7 +25,7 @@ public class LineDrawer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (manager.GetGameStart())
         {
             canDraw = true; // Réinitialiser l'état de dessin
             newLine = new GameObject("Line");
@@ -64,15 +64,34 @@ public class LineDrawer : MonoBehaviour
 
                 timer = timerdelay;
             }
-        }
 
-        if (Input.GetMouseButtonUp(0))
-        {
-            if (linePoints.Count > 1)
+            if (Input.GetMouseButton(0))
             {
-                AddMeshColliderToLine();
+                Debug.DrawLine(Camera.main.ScreenToWorldPoint(Input.mousePosition), m_mouseRaycast.GetHitPosition(), Color.red);
+                timer -= Time.deltaTime;
+                if (timer <= 0)
+                {
+                    linePoints.Add(m_mouseRaycast.GetHitPosition());
+                    drawLine.positionCount = linePoints.Count;
+                    drawLine.SetPositions(linePoints.ToArray());
+
+                    timer = timerdelay;
+                }
             }
-            linePoints.Clear();
+
+            if (Input.GetMouseButtonUp(0))
+            {
+                if (linePoints.Count > 1)
+                {
+                    AddMeshColliderToLine();
+                }
+                linePoints.Clear();
+                if (!manager.GetBallStart())
+                {
+                    manager.SetBallStart(true);
+                    ballMove.StartMove();
+                }
+            }
         }
     }
 

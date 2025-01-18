@@ -5,11 +5,15 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     private bool gameStart;
+    private bool ballStart;
+    private bool firstAction;
 
     // Start is called before the first frame update
     void Start()
     {
         gameStart = false;
+        ballStart = false;
+        firstAction = true;
     }
 
     // Update is called once per frame
@@ -26,5 +30,15 @@ public class GameManager : MonoBehaviour
     public bool GetGameStart()
     {
         return gameStart;
+    }
+
+    public void SetBallStart(bool state)
+    {
+        ballStart = state;
+    }
+
+    public bool GetBallStart()
+    {
+        return ballStart;
     }
 }
