@@ -58,12 +58,6 @@ public class LineDrawer : MonoBehaviour
             linePoints.Clear();
         }
     }
-
-    /*Vector3 GetMousePosition()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        return ray.origin + ray.direction * 10;
-    }*/
     
     void AddMeshColliderToLine()
     {
