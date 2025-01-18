@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,14 +6,15 @@ public class LineDrawer : MonoBehaviour
     List<Vector3> linePoints;
     float timer;
     public float timerdelay;
-    
+
     GameObject newLine;
     LineRenderer drawLine;
     public float lineWidth;
     public MouseRaycast m_mouseRaycast;
+    public float maxLineLength = 10f; // Longueur maximale de la ligne
+    private bool canDraw = true; // Permet de contrôler si le dessin est autorisé
     public GameManager manager;
     public BallMove ballMove;
-    
     // Start is called before the first frame update
     void Start()
     {
@@ -27,16 +27,42 @@ public class LineDrawer : MonoBehaviour
     {
         if (manager.GetGameStart())
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                newLine = new GameObject("Line");
-                drawLine = newLine.AddComponent<LineRenderer>();
-                drawLine.material = new Material(Shader.Find("Sprites/Default"));
+            canDraw = true; // Réinitialiser l'état de dessin
+            newLine = new GameObject("Line");
+            drawLine = newLine.AddComponent<LineRenderer>();
+            drawLine.material = new Material(Shader.Find("Sprites/Default"));
 
-                drawLine.startColor = Color.red;
-                drawLine.endColor = Color.red;
-                drawLine.startWidth = lineWidth;
-                drawLine.endWidth = lineWidth;
+            drawLine.startColor = Color.black;
+            drawLine.endColor = Color.black;
+            drawLine.startWidth = lineWidth;
+            drawLine.endWidth = lineWidth;
+        }
+
+        if (Input.GetMouseButton(0) && canDraw)
+        {
+            Debug.DrawLine(Camera.main.ScreenToWorldPoint(Input.mousePosition), m_mouseRaycast.GetHitPosition(), Color.red);
+            timer -= Time.deltaTime;
+            if (timer <= 0)
+            {
+                Vector3 newPoint = m_mouseRaycast.GetHitPosition();
+
+                // Vérifier si l'ajout du nouveau point ne dépasse pas la longueur maximale
+                if (linePoints.Count > 0)
+                {
+                    float newSegmentLength = Vector3.Distance(linePoints[linePoints.Count - 1], newPoint);
+                    if (GetTotalLineLength() + newSegmentLength > maxLineLength)
+                    {
+                        canDraw = false; // Arrêter le dessin
+                        return;
+                    }
+                }
+
+                // Ajouter le nouveau point
+                linePoints.Add(newPoint);
+                drawLine.positionCount = linePoints.Count;
+                drawLine.SetPositions(linePoints.ToArray());
+
+                timer = timerdelay;
             }
 
             if (Input.GetMouseButton(0))
@@ -68,7 +94,20 @@ public class LineDrawer : MonoBehaviour
             }
         }
     }
-    
+
+    float GetTotalLineLength()
+    {
+        float totalLength = 0f;
+
+        // Calculer la longueur totale des segments de la ligne
+        for (int i = 0; i < linePoints.Count - 1; i++)
+        {
+            totalLength += Vector3.Distance(linePoints[i], linePoints[i + 1]);
+        }
+
+        return totalLength;
+    }
+
     void AddMeshColliderToLine()
     {
         // Créer un nouveau mesh pour la ligne
