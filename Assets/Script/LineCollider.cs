@@ -1,9 +1,10 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class LineCollider : MonoBehaviour
 {
-    public float bounceMultiplier = 0f;
+    public float bounceMultiplier = 8f;
     public bool isSkillRed = false;
     public PhysicMaterial spherePhysicMaterial;
     
@@ -24,16 +25,11 @@ public class LineCollider : MonoBehaviour
                 }
                 else
                 {
-                    SphereCollider sphereCollider = collision.gameObject.GetComponent<SphereCollider>();
-                    sphereCollider.material = new PhysicMaterial();
+                    ballRigidbody.constraints = RigidbodyConstraints.FreezePosition | RigidbodyConstraints.FreezeRotation;
+                    ballRigidbody.constraints = RigidbodyConstraints.None;
+                    ballRigidbody.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY;
                 }
             }
         }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        SphereCollider sphereCollider = other.gameObject.GetComponent<SphereCollider>();
-        sphereCollider.material = spherePhysicMaterial;
     }
 }

@@ -10,6 +10,7 @@ public class SkillManager : MonoBehaviour
     public GameObject skill1;
     public GameObject skill2;
     public GameObject skill3;
+    public PlayerSkill playerSkill;
 
     // Start is called before the first frame update
     void Start()
@@ -20,19 +21,28 @@ public class SkillManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(playerSkill.GetCooldownRed() > 0)
+        {
+            skill1.SetActive(true);
+        }
+        else
+        {
+            skill1.SetActive(false);
+        }
+        if (playerSkill.GetCooldownGreen() > 0)
+        {
+            skill2.SetActive(true);
+        }
+        else
+        {
+            skill2.SetActive(false);
+        }
     }
 
     public void CoolDownSkill(string skill)
     {
         switch(skill)
         {
-            case "1":
-                StartCoroutine(StartCoolDown(3, skill1Active, skill1));
-                break;
-            case "2":
-                StartCoroutine(StartCoolDown(3, skill2Active, skill2));
-                break;
             case "3":
                 StartCoroutine(StartCoolDown(3, skill3Active, skill3));
                 break;
@@ -41,10 +51,12 @@ public class SkillManager : MonoBehaviour
 
     IEnumerator StartCoolDown(int time, bool skillBool, GameObject skill)
     {
+        playerSkill.SetShockActive(false);
         skillBool = false;
         skill.SetActive(true);
         yield return new WaitForSeconds(time);
         skillBool = true;
+        playerSkill.SetShockActive(true);
         skill.SetActive(false);
     }
 }

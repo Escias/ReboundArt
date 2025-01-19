@@ -9,9 +9,11 @@ public class Timer : MonoBehaviour
     public float elapsedTime = 0f;
     public bool timerIsRunning = false;
     public GameManager manager;
+    public GameObject instruction;
 
     void Start()
     {
+        instruction.SetActive(true);
         elapsedTime = 0f;
         timerIsRunning = true;
     }
@@ -20,6 +22,7 @@ public class Timer : MonoBehaviour
     {
         if (timerIsRunning && manager.GetBallStart())
         {
+            instruction.SetActive(false);
             elapsedTime += Time.deltaTime;
             UpdateTimerDisplay(elapsedTime);
         }

@@ -7,8 +7,11 @@ public class PlayerSkill : MonoBehaviour
     public GameObject m_ShockWave;
     public GameManager manager;
     public BallMove ballMove;
+    public SkillManager skillManager;
+
+    private bool skillShockActive = true;
     
-    public float cooldownDuration = 10f;
+    public float cooldownDuration = 3f;
     private bool skillRedActive = false;
     private bool lineDrawnDuringSkillRed = false;
     private float skillRedCooldownTimer = 0f;
@@ -23,26 +26,32 @@ public class PlayerSkill : MonoBehaviour
         {
             HandleCooldown();
 
-            if (Input.GetKeyDown(KeyCode.A) && skillRedCooldownTimer <= 0)
+            if (Input.GetKeyDown(KeyCode.Alpha1) && skillRedCooldownTimer <= 0)
             {
                 StartCoroutine(ActivateSkillRed());
             }
             
-            if (Input.GetKeyDown(KeyCode.Z) && skillGreenCooldownTimer <= 0)
+            if (Input.GetKeyDown(KeyCode.Alpha2) && skillGreenCooldownTimer <= 0)
             {
                 StartCoroutine(ActivateSkillGreen());
             }
 
-            if (Input.GetMouseButtonDown(1))
+            if (Input.GetMouseButtonDown(1) && skillShockActive)
             {
                 if (!manager.GetBallStart())
                 {
                     manager.SetBallStart(true);
                     ballMove.StartMove();
                 }
+                skillManager.CoolDownSkill("3");
                 StartCoroutine(UseShockWave());
             }
         }
+    }
+
+    public void SetShockActive(bool state)
+    {
+        skillShockActive = state;
     }
 
     public bool IsSkillRedActive()
@@ -63,6 +72,7 @@ public class PlayerSkill : MonoBehaviour
     public void MarkLineDrawn()
     {
         lineDrawnDuringSkillRed = true;
+        lineDrawnDuringSkillGreen = true;
         skillRedActive = false;
     }
 
@@ -71,6 +81,10 @@ public class PlayerSkill : MonoBehaviour
         if (skillRedCooldownTimer > 0)
         {
             skillRedCooldownTimer -= Time.deltaTime;
+        }
+        if (skillGreenCooldownTimer > 0)
+        {
+            skillGreenCooldownTimer -= Time.deltaTime;
         }
     }
 
@@ -107,5 +121,15 @@ public class PlayerSkill : MonoBehaviour
         GameObject shockWave = Instantiate(m_ShockWave, m_MouseRaycast.GetHitPosition(), Quaternion.identity);
         yield return new WaitForSeconds(0.3f);
         Destroy(shockWave);
+    }
+
+    public float GetCooldownRed()
+    {
+        return skillRedCooldownTimer;
+    }
+
+    public float GetCooldownGreen()
+    {
+        return skillGreenCooldownTimer;
     }
 }

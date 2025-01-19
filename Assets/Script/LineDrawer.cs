@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class LineDrawer : MonoBehaviour
@@ -59,6 +60,10 @@ public class LineDrawer : MonoBehaviour
                 {
                     playerSkill.MarkLineDrawn();
                 }
+                if (playerSkill != null && playerSkill.IsSkillGreenActive())
+                {
+                    playerSkill.MarkLineDrawn();
+                }
             }
 
             if (Input.GetMouseButton(0) && newLine != null)
@@ -109,11 +114,16 @@ public class LineDrawer : MonoBehaviour
 
     void AddMeshColliderToLine()
     {
-        Mesh lineMesh = new Mesh();
-        GenerateMesh(lineMesh);
-
-        MeshCollider meshCollider = newLine.AddComponent<MeshCollider>();
-        meshCollider.sharedMesh = lineMesh;
+        try
+        {
+            Mesh lineMesh = new Mesh();
+            GenerateMesh(lineMesh);
+            MeshCollider meshCollider = newLine.AddComponent<MeshCollider>();
+            meshCollider.sharedMesh = lineMesh;
+        }
+        catch
+        {
+        }
     }
 
     void AddLineColliderJumpToLine()
