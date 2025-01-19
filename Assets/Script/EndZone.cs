@@ -30,6 +30,10 @@ public class EndZone : MonoBehaviour
         {
             if (other.gameObject.tag == "Ball")
             {
+                if(sceneNumber == 9)
+                {
+                    MenuManager.LoadSceneByName("Menu");
+                }
                 MenuManager.LoadSceneByName("Level" + (sceneNumber + 1));
             }
         }
