@@ -30,7 +30,7 @@ public class EndZone : MonoBehaviour
         {
             if (other.gameObject.tag == "Ball")
             {
-                if(sceneNumber == 9)
+                if(sceneNumber == 5)
                 {
                     MenuManager.LoadSceneByName("Menu");
                 }
