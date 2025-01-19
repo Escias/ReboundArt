@@ -13,7 +13,8 @@ public class CameraFollow : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        Vector3 targetPosition = m_Ball.transform.position + offset;
+        transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, smooth);
     }
 
     // Update is called once per frame
