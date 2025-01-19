@@ -287,6 +287,7 @@ MonoBehaviour:
   m_ShockWave: {fileID: 4708799252254490678, guid: 34435cf4f1c5c0345a801975851e6cfd, type: 3}
   manager: {fileID: 1372843852}
   ballMove: {fileID: 828062324}
+  cooldownDuration: 10
 --- !u!114 &353234782
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -766,10 +767,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timerdelay: 0.01
   lineWidth: 0.1
-  m_mouseRaycast: {fileID: 353234779}
   maxLineLength: 4
+  m_mouseRaycast: {fileID: 353234779}
   manager: {fileID: 1372843852}
   ballMove: {fileID: 828062324}
+  playerSkill: {fileID: 353234781}
+  spherePhysicMaterial: {fileID: 13400000, guid: aa0c3114bfcbf614aa4bcd998a683845, type: 2}
+  bounceMultiplier: 2
 --- !u!4 &1655587094
 Transform:
   m_ObjectHideFlags: 0
